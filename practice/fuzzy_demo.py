@@ -43,7 +43,7 @@ print(f"Fuzzy Output Score: {sentiment_sim.output['sentiment']:.3f}")
 fig, (ax0, ax1, ax2) = plt.subplots(nrows=3, figsize=(8, 9))
 
 pos_score.view(ax=ax0)
-ax0.set_title("Positive Score Membership")
+ax0.set_title("Positive Score  Membership")
 
 neg_score.view(ax=ax1)
 ax1.set_title("Negative Score Membership")
