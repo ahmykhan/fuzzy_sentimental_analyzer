@@ -1,0 +1,122 @@
+# Checkpoint 5 (CP05) — Task 5.1: Fuzzy membership parameters and Mamdani rule base
+
+universes:
+  pos: [0.0, 1.0]
+  neg: [0.0, 1.0]
+  int: [0.0, 1.0]
+  polarity: [-1.0, 1.0]
+  ambivalence: [0.0, 1.0]
+  polarity_points: 2001
+  ambivalence_points: 1001
+
+# Triangular [a, b, c] and trapezoidal [a, b, c, d] membership definitions
+memberships:
+  POS:
+    low: [0.0, 0.0, 0.25, 0.50]
+    med: [0.25, 0.50, 0.75]
+    high: [0.50, 0.75, 1.0, 1.0]
+  NEG:
+    low: [0.0, 0.0, 0.25, 0.50]
+    med: [0.25, 0.50, 0.75]
+    high: [0.50, 0.75, 1.0, 1.0]
+  INT:
+    low: [0.0, 0.0, 0.25, 0.50]
+    med: [0.25, 0.50, 0.75]
+    high: [0.50, 0.75, 1.0, 1.0]
+  POLARITY:
+    very_neg: [-1.0, -1.0, -0.75, -0.45]
+    neg: [-0.70, -0.40, -0.10]
+    neu: [-0.25, 0.0, 0.25]
+    pos: [0.10, 0.40, 0.70]
+    very_pos: [0.45, 0.75, 1.0, 1.0]
+  AMBIVALENCE:
+    low: [0.0, 0.0, 0.25, 0.45]
+    med: [0.25, 0.50, 0.75]
+    high: [0.55, 0.75, 1.0, 1.0]
+
+# Each rule: antecedents on (POS, NEG, INT) -> consequents (POLARITY, AMBIVALENCE)
+# Use null when a consequent is not activated by that rule
+rules:
+  - name: strong_positive_intense
+    pos: high
+    neg: low
+    int: high
+    polarity: very_pos
+    ambivalence: low
+
+  - name: strong_positive_normal
+    pos: high
+    neg: low
+    int: med
+    polarity: very_pos
+    ambivalence: low
+
+  - name: moderate_positive
+    pos: med
+    neg: low
+    int: null
+    polarity: pos
+    ambivalence: low
+
+  - name: strong_negative_intense
+    pos: low
+    neg: high
+    int: high
+    polarity: very_neg
+    ambivalence: low
+
+  - name: strong_negative_normal
+    pos: low
+    neg: high
+    int: med
+    polarity: very_neg
+    ambivalence: low
+
+  - name: moderate_negative
+    pos: low
+    neg: med
+    int: null
+    polarity: neg
+    ambivalence: low
+
+  - name: neutral_low_polarity
+    pos: low
+    neg: low
+    int: low
+    polarity: neu
+    ambivalence: low
+
+  - name: conflicted_high_both
+    pos: high
+    neg: high
+    int: null
+    polarity: neu
+    ambivalence: high
+
+  - name: conflicted_med_both
+    pos: med
+    neg: med
+    int: null
+    polarity: neu
+    ambivalence: med
+
+  - name: mixed_high_pos_med_neg
+    pos: high
+    neg: med
+    int: null
+    polarity: pos
+    ambivalence: high
+
+  - name: mixed_med_pos_high_neg
+    pos: med
+    neg: high
+    int: null
+    polarity: neg
+    ambivalence: high
+
+  - name: intense_neutral_fallback
+    pos: low
+    neg: low
+    int: high
+    polarity: neu
+    ambivalence: med
