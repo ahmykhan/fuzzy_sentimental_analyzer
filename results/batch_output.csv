@@ -1,0 +1,11 @@
+text,error,polarity,ambivalence,is_mixed,pred_3class,pred_5class,verdict,flesch_score,explanation
+I absolutely loved this movie! The cast was amazing.,,0.7758,0.1904,False,2,4,very good,83.94,Tone is very good (+0.78). It shows clear upsides. Exclamation marks add punch.
+"The acting was brilliant, but the story was boring and too long.",,-0.4,0.1936,False,0,1,bad,119.44,Tone is bad (-0.40). It shows some flaws. The tone stays calm.
+The food was not good.,,-0.9,0.0068,False,0,0,very bad,107.02,Tone is very bad (-0.90). Upside is 0.01 and flaw is 0.91. The tone stays calm.
+It is a lovely film with lovely performances.,,0.9773,0.0053,False,2,4,very good,107.02,Tone is very good (+0.98). Upside is 0.98 and flaw is 0.01. The tone stays calm.
+"Terrible waste of time and money, I hated every minute of it!",,-0.7411,0.2142,False,0,0,very bad,90.99,Tone is very bad (-0.74). It shows clear flaws. Exclamation marks add punch.
+The movie runs for two hours and has a standard plot.,,0.0,0.1798,False,1,2,flat,112.64,Tone is flat (+0.00). It shows weak upsides and weak flaws. The tone stays calm.
+"Great cinematography and music, though the ending felt rushed.",,0.8749,0.0199,False,2,4,very good,107.02,Tone is very good (+0.87). Upside is 0.89 and flaw is 0.02. The tone stays calm.
+EXTREMELY GOOD AND AMAZING MOVIE!!!,,0.7906,0.1798,False,2,4,very good,90.23,Tone is very good (+0.79). It shows strong upsides and high stress. Exclamation marks add punch.
+"Not bad at all, actually quite enjoyable.",,0.7563,0.204,False,2,4,very good,98.04,Tone is very good (+0.76). It shows clear upsides. Extra words add punch.
+"A boring, predictable mess with weak dialogue.",,-0.9346,0.0062,False,0,0,very bad,107.02,Tone is very bad (-0.93). Upside is 0.01 and flaw is 0.94. The tone stays calm.
