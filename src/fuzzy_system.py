@@ -1,4 +1,5 @@
-# Checkpoint 5 (CP05) — Tasks 5.1, 5.2 & 5.3: Mamdani fuzzy inference system, defuzzification, and plots
+# Mamdani fuzzy inference engine: CP05 covers core Mamdani inference, defuzzification, and plots;
+# CP07 adds rule-firing trace output (infer_with_trace) to support plain-English explanations.
 
 import os
 import yaml
@@ -7,6 +8,7 @@ import skfuzzy as fuzz
 import matplotlib.pyplot as plt
 
 
+# --- CP05: Membership function evaluation helper ---
 def eval_mf(x: np.ndarray, params: list[float]) -> np.ndarray:
     """Evaluate triangular [a, b, c] or trapezoidal [a, b, c, d] membership on array x."""
     if len(params) == 3:
@@ -19,6 +21,7 @@ def eval_mf(x: np.ndarray, params: list[float]) -> np.ndarray:
 class FuzzySentimentAnalyzer:
     """Mamdani fuzzy inference system mapping (POS, NEG, INT) -> (polarity, ambivalence)."""
 
+    # --- CP05: Load universes, membership functions, and rules from config/rules.yaml ---
     def __init__(self, rules_path: str = "config/rules.yaml") -> None:
         with open(rules_path, "r", encoding="utf-8") as f:
             self.cfg = yaml.safe_load(f)
@@ -42,18 +45,21 @@ class FuzzySentimentAnalyzer:
 
         self.rules = self.cfg["rules"]
 
+    # --- CP05: Membership degree interpolation ---
     def _degree(self, x_grid: np.ndarray, mf_arr: np.ndarray, val: float) -> float:
         clipped_val = float(np.clip(val, x_grid[0], x_grid[-1]))
         return float(fuzz.interp_membership(x_grid, mf_arr, clipped_val))
 
-    def infer(self, pos: float, neg: float, intensity: float) -> dict[str, float]:
-        """Run Mamdani inference and centroid defuzzification for a single (POS, NEG, INT) tuple."""
+    # --- CP07: Rule-firing trace extension for explanation generation ---
+    def infer_with_trace(self, pos: float, neg: float, intensity: float) -> dict:
+        """Run Mamdani inference and return polarity, ambivalence, and active rules."""
         pos_val = float(np.clip(pos, 0.0, 1.0))
         neg_val = float(np.clip(neg, 0.0, 1.0))
         int_val = float(np.clip(intensity, 0.0, 1.0))
 
         agg_pol = np.zeros_like(self.x_pol)
         agg_amb = np.zeros_like(self.x_amb)
+        active_rules = []
 
         for rule in self.rules:
             firing_terms = []
@@ -68,6 +74,16 @@ class FuzzySentimentAnalyzer:
             if strength <= 0.0:
                 continue
 
+            # CP07: Record firing rule names and strengths
+            active_rules.append(
+                {
+                    "name": rule.get("name", "unnamed_rule"),
+                    "strength": round(float(strength), 4),
+                    "polarity": rule.get("polarity"),
+                    "ambivalence": rule.get("ambivalence"),
+                }
+            )
+
             if rule.get("polarity"):
                 clipped_pol = np.minimum(strength, self.pol_mfs[rule["polarity"]])
                 agg_pol = np.maximum(agg_pol, clipped_pol)
@@ -76,10 +92,12 @@ class FuzzySentimentAnalyzer:
                 clipped_amb = np.minimum(strength, self.amb_mfs[rule["ambivalence"]])
                 agg_amb = np.maximum(agg_amb, clipped_amb)
 
+        # CP07: Sort active rules from strongest to weakest firing strength
+        active_rules.sort(key=lambda r: r["strength"], reverse=True)
+
         if np.sum(agg_pol) > 0.0:
             polarity = float(fuzz.defuzz(self.x_pol, agg_pol, "centroid"))
         else:
-            # Fallback net balance if no rule fires strongly
             polarity = float(np.clip(pos_val - neg_val, -1.0, 1.0))
 
         if np.sum(agg_amb) > 0.0:
@@ -90,8 +108,19 @@ class FuzzySentimentAnalyzer:
         return {
             "polarity": float(np.clip(polarity, -1.0, 1.0)),
             "ambivalence": float(np.clip(ambivalence, 0.0, 1.0)),
+            "active_rules": active_rules,
         }
 
+    # --- CP05: Single-sample inference ---
+    def infer(self, pos: float, neg: float, intensity: float) -> dict[str, float]:
+        """Run Mamdani inference and centroid defuzzification for a single (POS, NEG, INT) tuple."""
+        traced = self.infer_with_trace(pos, neg, intensity)
+        return {
+            "polarity": traced["polarity"],
+            "ambivalence": traced["ambivalence"],
+        }
+
+    # --- CP05: Batch inference over arrays ---
     def infer_batch(self, pos_arr, neg_arr, int_arr) -> tuple[np.ndarray, np.ndarray]:
         """Vectorized wrapper over arrays of POS, NEG, and INT."""
         pol_out = []
@@ -102,6 +131,7 @@ class FuzzySentimentAnalyzer:
             amb_out.append(res["ambivalence"])
         return np.asarray(pol_out, dtype=float), np.asarray(amb_out, dtype=float)
 
+    # --- CP05: Membership function plot generation ---
     def plot_memberships(self, out_path: str = "results/membership.png") -> str:
         """Plot input (POS, NEG, INT) and output (POLARITY, AMBIVALENCE) membership functions."""
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -133,6 +163,7 @@ class FuzzySentimentAnalyzer:
         return out_path
 
 
+# --- CP05: Standalone plot run ---
 if __name__ == "__main__":
     analyzer = FuzzySentimentAnalyzer()
     saved = analyzer.plot_memberships("results/membership.png")
