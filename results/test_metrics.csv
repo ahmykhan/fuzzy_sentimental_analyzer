@@ -1,0 +1,7 @@
+split,model,n_rows,pearson_r,spearman_rho,mae,acc_3class,macro_f1_3class,acc_5class,macro_f1_5class
+sst_test,B1_VADER,2210,0.4497,0.4486,0.4176,0.5163,0.4706,0.3136,0.3064
+sst_test,B2_RoBERTa,2210,0.7699,0.7632,0.3489,0.7113,0.6196,0.3941,0.3813
+sst_test,Fuzzy_System(w=0.9),2210,0.7612,0.7533,0.2985,0.7,0.6306,0.4466,0.4454
+tweet_test,B1_VADER,12284,0.3645,0.3503,0.7003,0.368,0.2616,0.2008,0.1055
+tweet_test,B2_RoBERTa,12284,0.6086,0.6414,0.8076,0.3099,0.2224,0.1903,0.0955
+tweet_test,Fuzzy_System(w=0.9),12284,0.5975,0.6328,0.7752,0.2685,0.205,0.1685,0.0875
