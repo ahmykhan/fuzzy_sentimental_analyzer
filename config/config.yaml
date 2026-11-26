@@ -1,0 +1,17 @@
+# Checkpoint 4 (CP04) — Task 4.2: Feature fusion and reference configuration (Appendix C)
+
+fusion:
+  w: 0.7
+  mixed_threshold: 0.40
+
+model:
+  max_tokens: 256
+  batch_size: 32
+  random_seed: 42
+
+readability:
+  min_flesch: 60
+
+defuzzification:
+  polarity_points: 2001
+  ambivalence_points: 1001
